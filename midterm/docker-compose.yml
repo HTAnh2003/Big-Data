@@ -1,0 +1,27 @@
+# version: '3.8'
+
+# services:
+#   jupyter:
+#     image: jupyter/pyspark-notebook 
+#     container_name: jupyter_pyspark
+#     ports:
+#       - "8888:8888"
+#     volumes: 
+# #  Lệnh này cấu hình volumes này giúp đồng bộ hóa thư mục `work_midterm` trên máy tính với thư mục /home/jovyan/work trong container, cho phép chia sẻ dữ liệu giữa container và máy tính host.
+#       - ./work_midterm:/home/jovyan/work # ./work_midterm : thư mục nằm cùng cấp với file docker-compose.yml
+#     environment:
+#       - JUPYTER_ENABLE_LAB=yes
+#     command: ["start-notebook.sh", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+
+services:
+  jupyter:
+    build: .
+    container_name: jupyter_pyspark
+    ports:
+      - "8888:8888"
+    volumes: 
+      - ./work_midterm:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    command: ["start-notebook.sh", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+

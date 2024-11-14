@@ -1,0 +1,45 @@
+version: '3'
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - kafka_spark_net
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    networks:
+      - kafka_spark_net
+
+  spark:
+    image: bitnami/spark:latest  # Use the local Spark image
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8080:8080"  # Spark UI
+      - "7077:7077"  # Spark Master Port
+    networks:
+      - kafka_spark_net
+    command: ["/bin/bash", "-c", "while true; do sleep 1000; done"]
+
+  spark-worker:
+    image: bitnami/spark:latest  # Use the same local image for Spark worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077  # Connect to the Spark master
+    networks:
+      - kafka_spark_net
+
+networks:
+  kafka_spark_net:
+    driver: bridge

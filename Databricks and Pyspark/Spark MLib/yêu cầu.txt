@@ -1,0 +1,21 @@
+yêu cầu của bài lab:
+
+1) Tạo cluster, import được file notebook trên databricks
+
+2) Ôn lại các kiến thức về phân lớp trong machine learning: các thuật toán như 
+
+- Hồi quy logistic
+
+- Cây quyết định
+
+và các phương pháp chọn hyperparameter tối ưu (tuning)
+
+3) Thực hiện bài tập sau đây:
+
+- Khớp mô hình sử dụng thuật toán random forest
+
+- Tuning hyperparameter dùng cross validation với hyperparameter là max depth (độ sâu tối đa) của random forest
+
+- Test mô hình 
+
+Lưu ý: tham khảo thuật toán decision trees trong notebook

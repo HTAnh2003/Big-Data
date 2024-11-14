@@ -1,0 +1,970 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Hadoop MapReduce with Docker</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(249, 228, 188, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="fc970c1f-6e76-4aa8-90de-9d9f2f609468" class="page sans"><header><h1 class="page-title">Hadoop MapReduce with Docker</h1><p class="page-description"></p></header><div class="page-body"><h1 id="b6fa2400-9d0a-4446-8cb0-50aaa51e1c7e" class="">Giới thiệu</h1><p id="0e9200ef-6b5e-4687-be21-ca4659b7406c" class="">Hadoop – Map Reduce là một khung nền (software framework) mã nguồn mở, hỗ trợ người<br/>lập trình viết các ứng dụng theo mô hình Map/Reduce. Để hiện thực một ứng dụng theo mô<br/>hình Map/Reduce, sinh viên cần sử dụng các interface lập trình do Hadoop cung cấp như:<br/>Mapper, Reducer, JobConf, JobClient, Partitioner, OutputCollector, Reporter, InputFormat,<br/>OutputFormat, v.v..<br/></p><p id="a9c783c0-22e8-4ed4-a817-a57aa6615988" class="">Yêu cầu sinh viên tìm hiểu và chạy ứng dụng WordCount để hiểu rõ hoạt động của mô hình<br/>Map/Reduce và kiến trúc HDFS (Hadoop Distributed FileSystem). MapReduce Tutorial<br/>(<br/><a href="http://apache.org/">apache.org</a>)</p><h1 id="f84ee165-03b7-4762-b1ff-c446bb84a8a3" class="">Cài đặt</h1><ol type="1" id="2f817c0c-7284-4e3d-8d66-1723dc8ed8d3" class="numbered-list" start="1"><li>Thư mục build docker</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3d0fc0ad-278b-4031-a3fd-4aecff520f3e" class="code"><code class="language-Arduino">.
+├── config
+│   ├── core-site.xml
+│   ├── hdfs-site.xml
+│   ├── mapred-site.xml
+│   ├── ssh_config
+│   ├── start-hadoop.sh
+│   └── yarn-site.xml
+└── Dockerfile
+</code></pre><ol type="1" id="72144169-8e07-4efc-8860-bdafcd2cbf79" class="numbered-list" start="2"><li>Chuẩn bị dockerfile</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="908eb2cf-8ccc-4d3e-9c4e-42bde1729247" class="code"><code class="language-Docker">FROM ubuntu:latest
+
+# set environment vars
+ENV HADOOP_HOME /opt/hadoop
+ENV JARs opt/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.6.jar
+ENV HDFS_NAMENODE_USER=&quot;root&quot;
+ENV HDFS_DATANODE_USER=&quot;root&quot;
+ENV HDFS_SECONDARYNAMENODE_USER=&quot;root&quot;
+ENV YARN_RESOURCEMANAGER_USER=&quot;root&quot;
+ENV YARN_NODEMANAGER_USER=&quot;root&quot;
+
+# install packages
+RUN \
+  apt-get update &amp;&amp; apt-get install -y \
+  ssh \
+  rsync \
+  vim \
+  openjdk-8-jdk
+
+
+# download and extract hadoop, set JAVA_HOME in hadoop-env.sh, update path
+# Ref: https://downloads.apache.org/hadoop/common/
+RUN \
+  wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz &amp;&amp; \
+  tar -xzvf hadoop-3.3.6.tar.gz
+
+# Move dir hadoop to /opt/hadoop
+RUN  mv hadoop-3.3.6 /opt/hadoop
+
+# set env for hadoop
+RUN  echo &quot;export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-arm64&quot; &gt;&gt; /opt/hadoop/etc/hadoop/hadoop-env.sh
+RUN  echo &quot;PATH=$PATH:/opt/hadoop/bin&quot; &gt;&gt; ~/.bashrc
+
+# create ssh keys
+RUN \
+  ssh-keygen -t rsa -P &#x27;&#x27; -f ~/.ssh/id_rsa &amp;&amp; \
+  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys &amp;&amp; \
+  chmod 0600 ~/.ssh/authorized_keys
+
+# copy hadoop configs
+ADD config/*xml /opt/hadoop/etc/hadoop/
+
+# copy ssh config
+ADD config/ssh_config /root/.ssh/config
+
+# copy script to start hadoop
+ADD config/start-hadoop.sh start-hadoop.sh</code></pre><p id="0d298f0f-335b-4e06-97fe-154043cc88c7" class="">Lưu ý:  lệnh bên dưới là chọn đường dẫn của jdk java mà được cài đặt cho hadoop, dựa trên loại kiến trúc CPU của máy local (ARM64 hoặc AMD64).</p><p id="b0cce981-2a4a-4772-aa44-2ef941687e1b" class="">Nếu máy local là ARM64</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="81a33cc6-14fc-42b5-bcc3-e0e0215af08b" class="code"><code class="language-Bash">RUN  echo &quot;export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-arm64&quot; &gt;&gt; /opt/hadoop/etc/hadoop/hadoop-env.sh</code></pre><p id="ae37248c-2091-4c6c-9d12-304327bd4da9" class="">Nếu máy local là AMD64</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="60fe468e-bf41-4b01-a9de-a829cf923da3" class="code"><code class="language-Bash">RUN  echo &quot;export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64&quot; &gt;&gt; /opt/hadoop/etc/hadoop/hadoop-env.sh</code></pre><p id="576333cb-1c2a-4497-8d55-814124e3259e" class="">Để kiểm tra máy local có CPU kiến trúc nào:</p><p id="01a7098f-4cd9-4843-b847-53ece92889f1" class="">Trên Linux hoặc macOS</p><ol type="1" id="868c2c23-4ce7-4ae4-a6a2-8069edf5040e" class="numbered-list" start="1"><li><strong>Sử dụng </strong><code><strong>uname</strong></code><strong>:</strong><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="899e02cd-b692-478e-bc18-04b9716d054d" class="code"><code class="language-Shell" style="white-space:pre-wrap;word-break:break-all">uname -m</code></pre><ul id="ac0ee79a-e917-450d-ba1b-7ea2dfecc1a9" class="bulleted-list"><li style="list-style-type:disc">Nếu kết quả là <code>x86_64</code>, đó là CPU AMD64 (64-bit).</li></ul><ul id="c9368600-b070-443f-9437-e01255aa8bf9" class="bulleted-list"><li style="list-style-type:disc">Nếu kết quả là <code>aarch64</code>, đó là CPU ARM64 (64-bit).</li></ul></li></ol><p id="d1df81e4-bf87-4232-8d85-6c1330ee56fc" class=""><strong>Trên Windows</strong></p><ol type="1" id="14975d73-08b2-41bc-9994-5aec2b8c40ee" class="numbered-list" start="1"><li><strong>Sử dụng </strong><code><strong>wmic</strong></code><strong>:</strong><br/>Mở Command Prompt và chạy lệnh sau:<br/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="99186b72-e916-456a-85cc-fc3f9708763b" class="code"><code class="language-Shell" style="white-space:pre-wrap;word-break:break-all">
+wmic os get osarchitecture</code></pre><ul id="f3d8bddb-dcba-438e-97f8-7a67c7a75063" class="bulleted-list"><li style="list-style-type:disc"><code>x86_64</code>: Kiến trúc AMD64</li></ul><ul id="a698c83b-e151-4f02-9f3d-9bf53dba772d" class="bulleted-list"><li style="list-style-type:disc"><code>aarch64</code>: Kiến trúc ARM64</li></ul></li></ol><ol type="1" id="1ccf2f03-e43b-4a1c-9316-acf05d5d2b2a" class="numbered-list" start="3"><li>Build docker image</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="5af516c6-ecfd-424d-9fbb-9d059c8b8d8e" class="code"><code class="language-Arduino">docker build -t myhadoop .</code></pre><ol type="1" id="7fd0396a-e1bd-43a1-9326-88135b96d5cf" class="numbered-list" start="4"><li>Run docker image</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="259c76f9-a0fc-4a77-9f46-67fc0912598c" class="code"><code class="language-Arduino">docker run -it myhadoop bash</code></pre><p id="5d19e5ac-f3aa-485a-b98b-5e407a5f985a" class="">Sau khi thực thi thành công, kiểm tra đã cài đặt hadoop:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1599bdb2-e140-4357-8730-5f8d7c63c8d8" class="code"><code class="language-Bash">hadoop version</code></pre><p id="d9e8d432-4638-4fe6-b5fa-0e03481a1826" class="">Output:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="581c58fb-d549-47e1-afd3-80624eff80e2" class="code"><code class="language-Bash">root@196ba02a51de:/# hadoop version
+Hadoop 3.3.6
+Source code repository https://github.com/apache/hadoop.git -r 1be78238728da9266a4f88195058f08fd012bf9c
+Compiled by ubuntu on 2023-06-18T08:22Z
+Compiled on platform linux-x86_64
+Compiled with protoc 3.7.1
+From source with checksum 5652179ad55f76cb287d9c633bb53bbd
+This command was run using /opt/hadoop/share/hadoop/common/hadoop-common-3.3.6.jar</code></pre><p id="65e9cb29-5952-4439-ad58-a57ae5ad3db2" class="">Sau khi đã cài đặt thành công, thực hiện lệnh sau để khởi động:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e6500be4-aa48-4132-86a3-370c92badcf9" class="code"><code class="language-Bash">bash start-hadoop.sh</code></pre><p id="6e7f6761-7484-4b16-a410-c18542a8bdc8" class="">Sau khi chạy xong, kiểm tra các file trên dfs</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ae163d16-9e7a-4a0d-b30f-f6f970f3c617" class="code"><code class="language-Bash">hdfs dfs -ls /</code></pre><p id="d51cb684-9ef2-4a60-bc99-6df6986eedf2" class="">Output:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="34d8ca3d-4ca5-43b2-a3d2-11495de38008" class="code"><code class="language-Bash">root@196ba02a51de:/# hdfs dfs -ls /
+Found 1 items
+drwxrwx---   - root supergroup          0 2024-08-25 04:09 /tmp</code></pre><h1 id="c2e25501-44a8-4557-a766-920f4b394082" class="">Lệnh Hadoop</h1><ul id="3cd2c1d1-d6bf-43df-bb45-de3f99121a0e" class="bulleted-list"><li style="list-style-type:disc">Kiểm tra các file trên dfs<p id="b16da8d8-6152-400f-a91c-9e9344a27fc3" class="">Command</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="56a67485-c68d-45f6-8a36-b57a3c84c01d" class="code"><code class="language-Bash">hdfs dfs -ls &lt;dir&gt;</code></pre><p id="09bdf42a-2cce-4f68-992b-103c6e022e40" class="">Với &lt;dir&gt; là thư mục cần kiểm tra. ví dụ kiểm tra file tại thư mục  “/”</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="633aca1a-774b-4f2e-b243-c9211eda916f" class="code"><code class="language-Bash">hdfs dfs -ls /</code></pre></li></ul><ul id="7bb8e8f6-c696-49f7-8a0d-302f9c0874ad" class="bulleted-list"><li style="list-style-type:disc">Tải file lên dfs<p id="6e1379cb-b3f9-4631-8196-f53f438de725" class="">Command</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="a5ad2b9a-b9c8-48f3-a513-6b835589eff8" class="code"><code class="language-Bash">hdfs dfs -put -f &lt;source_file&gt; &lt;target_file&gt;</code></pre></li></ul><ul id="8ac52d58-6afa-4f75-bd93-4fe8807e5efd" class="bulleted-list"><li style="list-style-type:disc">Set replica<p id="b6030af8-ae12-49a2-88bc-e188681db50e" class="">Command</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="eb0f6dab-3fc5-41db-aa78-3e5311600dd6" class="code"><code class="language-Bash"> hdfs dfs -setrep &lt;num_replica&gt; &lt;filename&gt;</code></pre></li></ul><h1 id="15e022bb-5640-41fb-aa43-fd641e39c2fd" class="">WordCount</h1><p id="41fcd12a-3b73-41b9-a830-f578bc92bf9a" class="">Cho 1 file txt bao gồm nội dung bất kỳ, hãy dùng mapper và reducer để đếm các từ xuất hiện trong file (các từ cách nhau bởi khoảng trắng).</p><p id="48db83f3-397b-4962-9f3d-a32b284884ef" class="">
+</p><h2 id="cf5663a2-0134-484d-9ad1-3577722af8ad" class="">Hướng dẫn</h2><p id="e768a765-2af8-4384-96f5-9c1d4595884f" class="">Sau khi khởi động hadoop</p><ul id="f4e1cdb8-fa09-4418-990b-8aa7b67cb22a" class="bulleted-list"><li style="list-style-type:disc">Tạo thư mục lab1</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="56897bbd-9810-4195-bd97-27c7230aaa98" class="code"><code class="language-Bash">mkdir lab1 &amp;&amp; cd lab1</code></pre><ul id="d10f8ede-62a3-42b9-ad7c-1a8e718c398b" class="bulleted-list"><li style="list-style-type:disc">Tạo file input như sau và lưu với tên iuh.txt</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="960a30ab-026a-4298-bc11-f077ff3bc0dc" class="code"><code class="language-Bash">echo &#x27;Industrial University of HoChiMinh City 
+
+Industrial University of HoChiMinh City 
+
+Industrial University of HoChiMinh City 
+
+Faculty of Information Technology 
+
+Department of Data Science &#x27; &gt; iuh.txt</code></pre><ul id="61f26fce-636a-4a95-bd3b-99a50db10996" class="bulleted-list"><li style="list-style-type:disc">Tải file iuh.txt lên dfs</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="89d95533-84fe-4e06-9b5a-9804fd399d52" class="code"><code class="language-Bash">hdfs dfs -put -f ./iuh.txt /</code></pre><ul id="d9714049-f5b0-43fd-ac33-73e966a79012" class="bulleted-list"><li style="list-style-type:disc">Tạo file mapper - tách nội dung của file thành từng từ theo khỏang trắng và đếm 1 cho mỗi lần xuất hiện</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b1d256e7-4eea-4d2a-a129-9ca0a562a9f4" class="code"><code class="language-Bash">echo &#x27;#!/usr/bin/python3
+import sys
+def main(argv):
+    for line in sys.stdin:
+        wordlist = line.strip().split()
+        for word in wordlist:
+            print(word+&quot;\t&quot;+&quot;1&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main(sys.argv)&#x27; &gt; mapper.py</code></pre><ul id="8c1a7417-bb76-4df2-9da1-b6a5e9d4c3fb" class="bulleted-list"><li style="list-style-type:disc">Kiểm tra file mapper chạy được hay không?</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3ffd9750-35ad-4d34-891b-26751019c6c8" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# cat iuh.txt | python3 mapper.py
+Industrial      1
+University      1
+of      1
+HoChiMinh       1
+City    1
+Industrial      1
+University      1
+of      1
+HoChiMinh       1
+City    1
+Industrial      1
+University      1
+of      1
+HoChiMinh       1
+City    1
+Faculty 1
+of      1
+Information     1
+Technology      1
+Department      1
+of      1
+Data    1
+Science 1</code></pre><ul id="70a19cd1-6a80-4091-b3d4-14a83d7b0962" class="bulleted-list"><li style="list-style-type:disc">Cấp quyền thực thi cho file mapper</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d0de6319-c675-4af7-9a56-558e5e62cfa8" class="code"><code class="language-Bash">chmod a+x mapper.py</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="42a6c3f0-56a9-4f0c-81d6-338129254dc4" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# ll
+total 16
+drwxr-xr-x 2 root root 4096 Aug 25 08:01 ./
+drwxr-xr-x 1 root root 4096 Aug 25 08:01 ../
+-rw-r--r-- 1 root root  190 Aug 25 08:01 iuh.txt
+-rwxr-xr-x 1 root root  223 Aug 25 08:01 mapper.py*</code></pre><ul id="e4d6bedd-5038-4fa9-a716-c169b8cda551" class="bulleted-list"><li style="list-style-type:disc">Thực thi lại</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4d65132c-7eaf-4f06-8355-0dfb01e1572a" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# cat iuh.txt | ./mapper.py 
+Industrial      1
+University      1
+of      1
+HoChiMinh       1
+City    1
+Industrial      1
+University      1
+of      1
+HoChiMinh       1
+City    1
+Industrial      1
+University      1
+of      1
+HoChiMinh       1
+City    1
+Faculty 1
+of      1
+Information     1
+Technology      1
+Department      1
+of      1
+Data    1
+Science 1</code></pre><ul id="6fe640b7-5a82-499b-bf0c-2cf80e869338" class="bulleted-list"><li style="list-style-type:disc">Sắp xếp lại output để các từ giống nhau sẽ đứng cạnh nhau</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2876eb39-b8d6-41b2-bc43-2df87601fd85" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# cat iuh.txt | ./mapper.py | sort -k1,1
+City    1
+City    1
+City    1
+Data    1
+Department      1
+Faculty 1
+HoChiMinh       1
+HoChiMinh       1
+HoChiMinh       1
+Industrial      1
+Industrial      1
+Industrial      1
+Information     1
+Science 1
+Technology      1
+University      1
+University      1
+University      1
+of      1
+of      1
+of      1
+of      1
+of      1</code></pre><ul id="56338d29-a812-461a-90da-7f0c8e0e1cff" class="bulleted-list"><li style="list-style-type:disc">Tạo file reducer - Từ output của mapper, tạo danh sách các từ và đếm số lần xuất hiện</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bb3a97e4-77b6-4d64-9dd8-95eda609a332" class="code"><code class="language-Bash">echo &#x27;#!/usr/bin/python3
+import sys
+def main(argv):
+    current_word = None
+    count = 0
+    for line in sys.stdin:
+        word, n = line.strip().split(&quot;\t&quot;,1)
+        n = int(n)
+        if current_word == word:
+            count += n
+        else:
+            if current_word:
+                print(current_word+&quot;\t&quot;+str(count))
+            count = n
+            current_word = word
+    if current_word == word:
+        print(current_word+&quot;\t&quot;+str(count))
+
+if __name__ == &quot;__main__&quot;:
+    main(sys.argv)
+&#x27; &gt; reducer.py</code></pre><ul id="98baa569-5529-4d1a-aac3-3ed696c80084" class="bulleted-list"><li style="list-style-type:disc">Cấp quyền thực thi cho reducer</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b0849296-e3a4-4f97-87b0-0033a9d92f96" class="code"><code class="language-Bash">chmod a+x reducer.py</code></pre><ul id="6a84dc8e-82a8-456d-b00c-259c5219dae5" class="bulleted-list"><li style="list-style-type:disc">Kiểm tra file reducer chạy được hay không?</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2fbbe14f-1bec-44fb-955d-a09bd0ed6c3b" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# cat iuh.txt | ./mapper.py | sort -k1,1 | ./reducer.py 
+City    3
+Data    1
+Department      1
+Faculty 1
+HoChiMinh       3
+Industrial      3
+Information     1
+Science 1
+Technology      1
+University      3
+of      5</code></pre><ul id="6c1719e6-aa29-431e-ae72-785c0f4f61e9" class="bulleted-list"><li style="list-style-type:disc">Thực thi với mapper và reducer với hadoop</li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="09f075e7-3886-45cd-ba5b-124f50bf5f67" class="code"><code class="language-Bash">hadoop jar &lt;jar_file&gt; -input &lt;file_in_dfs&gt; -output &lt;dir_output&gt; -mapper &lt;file_mapper&gt; -reducer &lt;file_reducer&gt;</code></pre><p id="e43027c3-547c-43f7-95be-2b6c104853ec" class="">ví dụ:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="48075bce-70c5-47ae-a8d5-2a912239a443" class="code"><code class="language-Bash"> hadoop jar $JARs -input /iuh.txt -output output -mapper /lab1/mapper.py -reducer /lab1/reducer.py</code></pre><p id="c33c4c00-6984-4176-87ce-484f48f4f876" class="">Output</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7e7849f3-ee97-477b-aa53-2b6a694d392e" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# hadoop jar $JARs -input /iuh.txt -output output -mapper /lab1/mapper.py -reducer /lab1/reducer.py
+2024-08-25 13:14:46,501 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+packageJobJar: [/tmp/hadoop-unjar8505073691030412411/] [] /tmp/streamjob4055092647481965574.jar tmpDir=null
+2024-08-25 13:14:46,925 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /127.0.0.1:8032
+2024-08-25 13:14:47,081 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /127.0.0.1:8032
+2024-08-25 13:14:47,236 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1724572860133_0002
+2024-08-25 13:14:47,453 INFO mapred.FileInputFormat: Total input files to process : 1
+2024-08-25 13:14:47,510 INFO mapreduce.JobSubmitter: number of splits:2
+2024-08-25 13:14:48,024 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1724572860133_0002
+2024-08-25 13:14:48,024 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2024-08-25 13:14:48,164 INFO conf.Configuration: resource-types.xml not found
+2024-08-25 13:14:48,164 INFO resource.ResourceUtils: Unable to find &#x27;resource-types.xml&#x27;.
+2024-08-25 13:14:48,668 INFO impl.YarnClientImpl: Submitted application application_1724572860133_0002
+2024-08-25 13:14:48,710 INFO mapreduce.Job: The url to track the job: http://ebcd075e748e:8088/proxy/application_1724572860133_0002/
+2024-08-25 13:14:48,712 INFO mapreduce.Job: Running job: job_1724572860133_0002
+2024-08-25 13:14:55,832 INFO mapreduce.Job: Job job_1724572860133_0002 running in uber mode : false
+2024-08-25 13:14:55,835 INFO mapreduce.Job:  map 0% reduce 0%
+2024-08-25 13:14:58,972 INFO mapreduce.Job:  map 100% reduce 0%
+2024-08-25 13:15:03,008 INFO mapreduce.Job:  map 100% reduce 100%
+2024-08-25 13:15:03,016 INFO mapreduce.Job: Job job_1724572860133_0002 completed successfully
+2024-08-25 13:15:03,121 INFO mapreduce.Job: Counters: 54
+        File System Counters
+                FILE: Number of bytes read=279
+                FILE: Number of bytes written=835565
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=447
+                HDFS: Number of bytes written=117
+                HDFS: Number of read operations=11
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=2
+                HDFS: Number of bytes read erasure-coded=0
+        Job Counters 
+                Launched map tasks=2
+                Launched reduce tasks=1
+                Data-local map tasks=2
+                Total time spent by all maps in occupied slots (ms)=3404
+                Total time spent by all reduces in occupied slots (ms)=1447
+                Total time spent by all map tasks (ms)=3404
+                Total time spent by all reduce tasks (ms)=1447
+                Total vcore-milliseconds taken by all map tasks=3404
+                Total vcore-milliseconds taken by all reduce tasks=1447
+                Total megabyte-milliseconds taken by all map tasks=3485696
+                Total megabyte-milliseconds taken by all reduce tasks=1481728
+        Map-Reduce Framework
+                Map input records=9
+                Map output records=23
+                Map output bytes=227
+                Map output materialized bytes=285
+                Input split bytes=162
+                Combine input records=0
+                Combine output records=0
+                Reduce input groups=11
+                Reduce shuffle bytes=285
+                Reduce input records=23
+                Reduce output records=11
+                Spilled Records=46
+                Shuffled Maps =2
+                Failed Shuffles=0
+                Merged Map outputs=2
+                GC time elapsed (ms)=196
+                CPU time spent (ms)=1190
+                Physical memory (bytes) snapshot=789528576
+                Virtual memory (bytes) snapshot=7449767936
+                Total committed heap usage (bytes)=569901056
+                Peak Map Physical memory (bytes)=267350016
+                Peak Map Virtual memory (bytes)=2480377856
+                Peak Reduce Physical memory (bytes)=267165696
+                Peak Reduce Virtual memory (bytes)=2489942016
+        Shuffle Errors
+                BAD_ID=0
+                CONNECTION=0
+                IO_ERROR=0
+                WRONG_LENGTH=0
+                WRONG_MAP=0
+                WRONG_REDUCE=0
+        File Input Format Counters 
+                Bytes Read=285
+        File Output Format Counters 
+                Bytes Written=117
+2024-08-25 13:15:03,121 INFO streaming.StreamJob: Output directory: output</code></pre><p id="61afc8f4-c76a-47a4-b7f5-1c46083b916e" class="">Sau khi thực hiện, kiểm tra output được lưu trên dfs</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0ccb747b-0aa8-4957-bd7b-e5d990cc7b98" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# hdfs dfs -ls output/
+2024-08-25 13:16:34,704 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Found 2 items
+-rw-r--r--   1 root supergroup          0 2024-08-25 13:15 output/_SUCCESS
+-rw-r--r--   1 root supergroup        117 2024-08-25 13:15 output/part-00000</code></pre><p id="e16a59ac-53c5-4e74-a1b7-d201d9c40672" class="">Xem kết quả ở file output part-0000</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="cf04f800-6de8-433a-b714-c95595af678c" class="code"><code class="language-Bash">root@ebcd075e748e:/lab1# hdfs dfs -cat output/part-00000
+2024-08-25 13:17:43,424 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+City    3
+Data    1
+Department      1
+Faculty 1
+HoChiMinh       3
+Industrial      3
+Information     1
+Science 1
+Technology      1
+University      3
+of      5</code></pre><p id="a294516b-62e2-46b8-9328-c7734b1fce13" class=""><strong>Note: Nếu xảy ra lỗi với $JARs, kiểm tra lại biến môi trường $JARs. JARs là đường dẫn đến file “hadoop-streaming-3.3.6.jar”. Kiểm tra tại thư mục: “/opt/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.6.jar”. Thực hiện gán cho biến môi trường</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="95c4b5d3-58bb-4618-955a-7ce1367db956" class="code"><code class="language-Bash">export JARs=/opt/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.6.jar</code></pre><p id="313254f7-b69f-40cc-8575-c7e17f0fec59" class="">Hoặc thực hiện trực tiếp</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="52292608-8bb9-46b1-9a49-77cd79feee70" class="code"><code class="language-Bash">hadoop jar /opt/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.6.jar -input /iuh.txt -output output -mapper /lab1/mapper.py -reducer /lab1/reducer.py</code></pre><p id="11868a7e-26ae-4647-b105-7f19bdbdb4fd" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

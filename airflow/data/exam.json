@@ -1,0 +1,122 @@
+[
+    {
+        "exam_id": 1,
+        "student_id": 1,
+        "subject": "Vật lý",
+        "score": 8.5
+    },
+    {
+        "exam_id": 2,
+        "student_id": 1,
+        "subject": "Toán",
+        "score": 7.0
+    },
+    {
+        "exam_id": 3,
+        "student_id": 2,
+        "subject": "Vật lý",
+        "score": null
+    },
+    {
+        "exam_id": 4,
+        "student_id": 2,
+        "subject": "Toán",
+        "score": 6.5
+    },
+    {
+        "exam_id": 5,
+        "student_id": 3,
+        "subject": "Vật lý",
+        "score": 9.0
+    },
+    {
+        "exam_id": 6,
+        "student_id": 3,
+        "subject": "Toán",
+        "score": null
+    },
+    {
+        "exam_id": 7,
+        "student_id": 4,
+        "subject": "Vật lý",
+        "score": 5.5
+    },
+    {
+        "exam_id": 8,
+        "student_id": 4,
+        "subject": "Toán",
+        "score": 7.5
+    },
+    {
+        "exam_id": 9,
+        "student_id": 5,
+        "subject": "Vật lý",
+        "score": 6.0
+    },
+    {
+        "exam_id": 10,
+        "student_id": 5,
+        "subject": "Toán",
+        "score": null
+    },
+    {
+        "exam_id": 11,
+        "student_id": 6,
+        "subject": "Vật lý",
+        "score": null
+    },
+    {
+        "exam_id": 12,
+        "student_id": 6,
+        "subject": "Toán",
+        "score": 8.0
+    },
+    {
+        "exam_id": 13,
+        "student_id": 7,
+        "subject": "Vật lý",
+        "score": 7.0
+    },
+    {
+        "exam_id": 14,
+        "student_id": 7,
+        "subject": "Toán",
+        "score": null
+    },
+    {
+        "exam_id": 15,
+        "student_id": 8,
+        "subject": "Vật lý",
+        "score": 6.5
+    },
+    {
+        "exam_id": 16,
+        "student_id": 8,
+        "subject": "Toán",
+        "score": 9.0
+    },
+    {
+        "exam_id": 17,
+        "student_id": 9,
+        "subject": "Vật lý",
+        "score": null
+    },
+    {
+        "exam_id": 18,
+        "student_id": 9,
+        "subject": "Toán",
+        "score": 8.5
+    },
+    {
+        "exam_id": 19,
+        "student_id": 10,
+        "subject": "Vật lý",
+        "score": 7.5
+    },
+    {
+        "exam_id": 20,
+        "student_id": 10,
+        "subject": "Toán",
+        "score": 6.0
+    }
+]

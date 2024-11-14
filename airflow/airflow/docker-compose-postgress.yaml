@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: lab8
+      POSTGRES_PASSWORD: lab8
+      POSTGRES_DB: lab8
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "lab8"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432

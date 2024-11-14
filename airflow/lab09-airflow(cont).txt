@@ -1,0 +1,5 @@
+File: https://raw.githubusercontent.com/tnhanh/data-midterm-17A/refs/heads/main/email.csv
+
+Với dữ liệu cho trên hãy sử dụng airflow xây dựng data pipeline:
+
+- Mỗi 5 phút thực hiện lấy ngẫu nhiên 200 email từ dữ liệu trên và lưu lại vào mongoDb, sau khi lưu lại thực hiện quá trình xử lý email để tạo thành dữ liệu  có cấu trúc và lưu lại vào PostgreSQL.

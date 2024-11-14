@@ -1,0 +1,18 @@
+<configuration>
+    <property>
+        <name>yarn.resourcemanager.bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>resourcemanager:8050</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+    <property>
+        <name>yarn.timeline-service.bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+</configuration>

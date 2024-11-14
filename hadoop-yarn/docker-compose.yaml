@@ -1,0 +1,69 @@
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
+    container_name: namenode
+    environment:
+      - CLUSTER_NAME=test-cluster
+    volumes:
+      - namenode:/hadoop/dfs/name
+      - ./config/namenode/core-site.xml:/etc/hadoop/core-site.xml
+      - ./config/namenode/hdfs-site.xml:/etc/hadoop/hdfs-site.xml
+      - ./config/namenode/yarn-site.xml:/etc/hadoop/yarn-site.xml
+      - ./input-sudoku.txt:/input-sudoku.txt
+    ports:
+      - 9870:9870
+      - 9000:9000
+    networks:
+      - hadoop
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
+    container_name: datanode
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - CLUSTER_NAME=test-cluster
+    volumes:
+      - datanode:/hadoop/dfs/data
+    networks:
+      - hadoop
+
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop2.7.4-java8
+    container_name: resourcemanager
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    volumes:
+      - ./config/resourcemanager/yarn-site.xml:/etc/hadoop/yarn-site.xml
+    ports:
+      - 8088:8088
+    networks:
+      - hadoop
+
+  nodemanager:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop2.7.4-java8
+    container_name: nodemanager
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+    volumes:
+      - ./config/nodemanager/yarn-site.xml:/etc/hadoop/yarn-site.xml
+    networks:
+      - hadoop
+    depends_on:
+      - resourcemanager
+
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop2.7.4-java8
+    container_name: historyserver
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - YARN_CONF_yarn_resourcemanager_hostname=resourcemanager
+      - YARN_CONF_yarn_resourcemanager_address=resourcemanager:8050
+    networks:
+      - hadoop
+
+volumes:
+  namenode:
+  datanode:
+
+networks:
+  hadoop:
